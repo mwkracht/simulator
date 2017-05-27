@@ -18,7 +18,7 @@ MS_PER_SEC = 1000.0
 
 def force_quit(signum, frame):
     """Method is called whenever SIGINT or SIGTERM is sent to the running
-    application. Set raise exception to terminate simulation in a controlled
+    application. Raise exception to terminate simulation in a controlled
     manner"""
     raise trafficsim.SimulationTerminated('Force Quit')
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
                         help='Duration in ms for simulation step. Defaults to 100ms')
     params = parser.parse_args()
 
-    # Register
+    # Register handler for kill signals from OS
     signal.signal(signal.SIGINT, force_quit)
     signal.signal(signal.SIGTERM, force_quit)
 
