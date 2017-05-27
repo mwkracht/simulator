@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Simple command line wrapper for running simulation
 using simulator package.
@@ -55,12 +57,12 @@ if __name__ == "__main__":
                 break
 
             # Perform simulator step of fixed time
-            simulator.step(params.step)
+            step_time = simulator.step(params.step)
             display_str = simulator.display()
 
             # Update Display w/ Simulator image and sleep for step time
             update_display(display_str)
-            time.sleep(params.step/MS_PER_SEC)
+            time.sleep(step_time/MS_PER_SEC)
 
     # Run simulation within curses display context
     curses.wrapper(run_sim)

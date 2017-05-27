@@ -27,3 +27,8 @@ __all__ = (
 
 # Versioning
 __version__ = '0.0.1'
+
+
+def get_version():
+	"""Simple version wrapper for setup.py"""
+	return __version__

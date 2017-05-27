@@ -60,7 +60,7 @@ class BasePattern(object):
         Args:
             milliseconds (int): milliseconds to increment time
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def current_state(self):
