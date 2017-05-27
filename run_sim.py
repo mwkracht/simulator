@@ -6,6 +6,7 @@ using simulator package.
 """
 import argparse
 import curses
+import signal
 import time
 
 import trafficsim
@@ -13,6 +14,13 @@ import trafficsim
 
 MS_PER_STEP = 100
 MS_PER_SEC = 1000.0
+
+
+def force_quit(signum, frame):
+    """Method is called whenever SIGINT or SIGTERM is sent to the running
+    application. Set raise exception to terminate simulation in a controlled
+    manner"""
+    raise trafficsim.SimulationTerminated('Force Quit')
 
 
 if __name__ == "__main__":
@@ -24,6 +32,10 @@ if __name__ == "__main__":
     parser.add_argument('step', type=int, default=MS_PER_STEP, nargs='?',
                         help='Duration in ms for simulation step. Defaults to 100ms')
     params = parser.parse_args()
+
+    # Register
+    signal.signal(signal.SIGINT, force_quit)
+    signal.signal(signal.SIGTERM, force_quit)
 
     # Construct pattern from provided arguments
     pattern = trafficsim.SimplePattern(params.red_ms, params.yellow_ms, params.green_ms)
@@ -46,23 +58,28 @@ if __name__ == "__main__":
             stdscr.addstr(0, 0, display_str)
             stdscr.refresh()
 
-        while True:
-            # Poll on keyboard input - required until simulator can run
-            # and print in separate thread context from display
-            c = stdscr.getch()
-            if c == ord('q'):
-                # If 'q' is pressed exit simulation
-                update_display('Exiting Traffic Light Simulator')
-                time.sleep(1)
-                break
+        try:
+            while True:
+                # Poll on keyboard input - required until simulator can run
+                # and print in separate thread context from display
+                if stdscr.getch() == ord('q'):
+                    raise trafficsim.SimulationTerminated('User Quit')
 
-            # Perform simulator step of fixed time
-            step_time = simulator.step(params.step)
-            display_str = simulator.display()
+                # Perform simulator step of fixed time
+                step_time = simulator.step(params.step)
+                display_str = simulator.display()
 
-            # Update Display w/ Simulator image and sleep for step time
-            update_display(display_str)
-            time.sleep(step_time/MS_PER_SEC)
+                # Update Display w/ Simulator image and sleep for step time
+                update_display(display_str)
+                time.sleep(step_time/MS_PER_SEC)
+
+        except trafficsim.SimulationTerminated:
+            # Traffic Simulation terminated. Gracefully exit...
+            update_display('Exiting Traffic Light Simulator')
+            time.sleep(1)
+
+        except Exception as err:
+            raise err # Raise any other excpetions that may occur during simulation
 
     # Run simulation within curses display context
     curses.wrapper(run_sim)
