@@ -1,6 +1,7 @@
 # Traffic Simulator
 
 [![Build Status](https://travis-ci.org/mwkracht/trafficsim.svg?branch=master)](https://travis-ci.org/mwkracht/trafficsim)
+[![Coverage Status](https://coveralls.io/repos/github/mwkracht/trafficsim/badge.svg?branch=master)](https://coveralls.io/github/mwkracht/trafficsim?branch=master)
 
 This code originated as a coding project for an interview. Currently, it is only being mainatined it as an example python project that can be used to get other python projects off the ground faster. I will continue to incorporate any useful patterns for python packaging (i.e. how to run tests, hook into CI builds, setup logging, handle init importing, etc.) as I run across them.
 
