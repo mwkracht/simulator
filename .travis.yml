@@ -1,0 +1,19 @@
+language: python
+
+matrix:
+  include:
+    - name: "Python 3.6 Unit Tests"
+      python: 3.6
+      env: TOXENV=py36
+    - name: "Python 2.7 Unit Tests"
+      python: 2.7
+      env: TOXENV=py27
+    - name: "Linter"
+      python: 2.7
+      env: TOXENV=lint
+
+install:
+  - pip install tox
+
+script:
+  - tox
