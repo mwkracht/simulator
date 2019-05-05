@@ -1,12 +1,16 @@
 # Traffic Simulator
 A Simple Traffic Simulator
 
+This code originated as a coding project for an interview. Currently, it is only being mainatined it as an example python project that can be used to get other python projects off the ground faster. I will continue to incorporate any useful patterns for python packaging (i.e. how to run tests, hook into CI builds, setup logging, handle init importing, etc.) as I run across them.
+
+The package should generally work but the code content is not going to be expanded. Test coverage will not be expanded either unless it provides an opportunity to show a useful testing pattern.
+
 #### Usage Instructions
 
-Provided is a trafficsim command line utility (run_sim.py) that will all for the running of simple one traffic light simulations. The usage of that script follow:
+Provided is a trafficsim command line utility (traffic-simulator) that will all for the running of simple one traffic light simulations. The usage of that script follow:
 
 ```shell
-usage: run_sim.py [-h] red_ms yellow_ms green_ms [step]
+usage: traffic-simulator [-h] red_ms yellow_ms green_ms [step]
 
 Run Simple Traffic Signal Simulator. To safely exit the simulation press 'q'.
 
@@ -14,46 +18,35 @@ positional arguments:
   red_ms      Duration in ms for red light
   yellow_ms   Duration in ms for yellow light
   green_ms    Duration in ms for green light
-  step        (Optional) Duration in ms for simulation step. Defaults to 100ms
+  step        Duration in ms for simulation step. Defaults to 100ms
 
 optional arguments:
   -h, --help  show this help message and exit
 ```
 
-This simulator will run indefinitely until a user safely exits by pressing the 'q' key. Note that the trafficsim package is not required to be installed as long as you execute the run_sim.py from the root directly of this repository.
+This simulator will run indefinitely until a user safely exits by pressing the 'q' key. The trafficsim package will need to be installed prior to running the traffic-simulator script.
 
-An example usage of the run_sim.py utility for a traffic light sim where each light cycles every second:
+An example usage of the traffic-simulator utility for a traffic light sim where each light cycles every second:
 
 ```shell
-python run_sim.py 1000 1000 1000
+traffic-simulator 1000 1000 1000
 ```
 
 #### Package Installation
 
-Simply use the setup.py provided to install the package into your disutils.
+Use pip to install this repository.
 
 ```shell
-python setup.py install
-```
-
-#### Source Installation
-
-Add path to location where you have cloned this repository to your PYTHONPATH environment variable. Install requirements.txt using pip.
-
-On Linux/MacOSx:
-```shell
-export PYTHONPATH="${PYTHONPATH}:/path/to/respository"
-pip install -r /path/to/repository/requirements.txt
+git clone git@github.com:mwkracht/trafficsim.git
+pip install trafficsim
 ```
 
 #### Running Tests
 
+All tests and linting is run using tox. Tox can be installed using pip.
+
 ```shell
-python -m pytest /path/to/repository/tests
+tox -c <path to trafficsim>/tox.ini
 ```
 
-#### Todo
-
-* Simulator Unit Tests
-* Continuous Integration Support for automating builds
 

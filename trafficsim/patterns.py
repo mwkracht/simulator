@@ -1,8 +1,12 @@
 """
-Module contains collection of possible traffic light
-patterns. Each pattern contains a state machine which
-determines color sequences and duration of the lights.
+Module contains collection of possible traffic light patterns.
+
+Each pattern contains a state machine which determines color sequences and duration of the lights.
 """
+import abc
+import six
+
+
 __all__ = (
     'SimplePattern',
     'State'
@@ -12,24 +16,25 @@ __all__ = (
 # State Machine Classes
 # ================================
 
-class Node(object):
+class Node(object):  # pylint: disable=too-few-public-methods
     """Base object for constructing Pattern state machines."""
 
-    def __init__(self, state, duration, next):
-        """Construct State Machine Node described by given params
+    def __init__(self, state, duration, next_node):
+        """Construct State Machine Node.
 
         Args:
             state (object): descriptor of node state
             duration (int): milliseconds that state will last
-            next (Node): next Node to transition to
+            next_node (Node): next Node to transition to
         """
         self.state = state
         self.duration = duration
-        self.next = next
+        self.next_node = next_node
 
 
-class State(object):
-    """Enum pattern states to avoid magic strings"""
+class State(object):  # pylint: disable=too-few-public-methods
+    """Enum pattern states to avoid magic strings."""
+
     RED = 'red'
     YELLOW = 'yellow'
     GREEN = 'green'
@@ -38,53 +43,54 @@ class State(object):
 # Pattern Classes
 # ===============
 
-class BasePattern(object):
-    """Base class for all Pattern classes"""
+class BasePattern(six.with_metaclass(abc.ABCMeta, object)):
+    """Base class for all Pattern classes."""
 
-    def __init__(self, *args, **kwargs):
-        """All Pattern objects have the following base attributes
+    def __init__(self):
+        """
+        Initialize pattern object with fixed base attributes.
 
         _first_node (Node): initial state of the state machine
         _current_node (Node): current state of the state machine
         ms_ellapsed (int): milliseconds ellapsed for pattern
         ms_to_next_state (int): milliseconds until next state transition
         """
-        self._first_node = Node(state=None, duration=0, next=None)
+        self._first_node = Node(state=None, duration=0, next_node=None)
         self._current_node = self._first_node
         self.ms_to_next_state = self._first_node.duration
         self.ms_ellapsed = 0
 
+    @abc.abstractmethod
     def increment_time(self, milliseconds):
-        """Move the time of the pattern ahead the given milliseconds
+        """
+        Move the time of the pattern ahead the given milliseconds.
 
         Args:
             milliseconds (int): milliseconds to increment time
         """
-        raise NotImplementedError
+        return
 
     @property
     def current_state(self):
-        """Simple getter for current node's state object"""
+        """Return current node state object."""
         return self._current_node.state
 
     def reset(self):
-        """Reset pattern. Restore current state to initial state and time to 0ms"""
+        """Reset pattern by setting current state to initial state and time to 0ms."""
         self._current_node = self._first_node
         self.ms_to_next_state = self._first_node.duration
         self.ms_ellapsed = 0
 
 
 class SimplePattern(BasePattern):
-    """Simple traffic light pattern than transitions
-    from green to yellow to red and then cycles back
-    to green"""
+    """Traffic light pattern that has fixed durations for green/yellow/red light states."""
 
-    def __init__(self, 
+    def __init__(self,
                  red_duration,
                  yellow_duration,
                  green_duration):
-        """ Creates simple pattern object, durations
-        must be provided for each color.
+        """
+        Create simple pattern object, using provided durations to describe light pattern.
 
         Note: All SimplePatterns will start from in green state that
         will last the full duration provided for the green light.
@@ -94,14 +100,13 @@ class SimplePattern(BasePattern):
             yellow_duration (int): duration of yellow light state in ms
             green_duration (int): duration of green light state in ms
         """
-        # Invoke base class constructor to set all required vars on object
         super(SimplePattern, self).__init__()
 
         # Initialize all states for this pattern
-        red = Node(state=State.RED, duration=red_duration, next=None)
-        yellow = Node(state=State.YELLOW, duration=yellow_duration, next=red)
-        green = Node(state=State.GREEN, duration=green_duration, next=yellow)
-        red.next = green
+        red = Node(state=State.RED, duration=red_duration, next_node=None)
+        yellow = Node(state=State.YELLOW, duration=yellow_duration, next_node=red)
+        green = Node(state=State.GREEN, duration=green_duration, next_node=yellow)
+        red.next_node = green
 
         # Store period of state machine to speed time increments
         self._period = sum([red.duration, yellow.duration, green_duration])
@@ -111,7 +116,8 @@ class SimplePattern(BasePattern):
         self.reset()
 
     def increment_time(self, milliseconds):
-        """Move the time of the pattern ahead the given milliseconds
+        """
+        Move the time of the pattern ahead by the given milliseconds.
 
         Args:
             milliseconds (int): milliseconds to increment time
@@ -123,7 +129,7 @@ class SimplePattern(BasePattern):
         # Cycle through states until new current state is found
         while phase >= self.ms_to_next_state:
             phase -= self.ms_to_next_state
-            self._current_node = self._current_node.next
+            self._current_node = self._current_node.next_node
             self.ms_to_next_state = self._current_node.duration
 
         # Current state is found so decrement remaining phase from duration to next state
@@ -131,4 +137,3 @@ class SimplePattern(BasePattern):
 
         # Increment patterns time
         self.ms_ellapsed += milliseconds
-

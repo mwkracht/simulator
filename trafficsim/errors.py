@@ -1,17 +1,14 @@
-"""
-Module contains trafficsim custom excpetions
-"""
+"""Module contains custom excpetions for trafficsim package."""
 
 __all__ = (
-	'IllegalSimulation',
-	'SimulationTerminated'
+    'IllegalSimulation',
+    'SimulationTerminated'
 )
 
+
 class IllegalSimulation(Exception):
-	"""Unable to run given simulation"""
-	pass
+    """Raised when unable to run given simulation."""
 
 
 class SimulationTerminated(Exception):
-	"""Simulation was terminated"""
-	pass
+    """Raised when simulation is terminated."""

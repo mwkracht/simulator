@@ -1,7 +1,6 @@
-"""
-Module contains classes for running time base simulations
-"""
-import time
+"""Module contains classes for running time base simulations."""
+import abc
+import six
 
 from trafficsim import errors
 
@@ -14,32 +13,36 @@ __all__ = (
 MS_IN_SEC = 1000.0
 
 
-class BaseSimClass(object):
-    """Base class defining interface of objects used in Simulator"""
+class BaseSimClass(six.with_metaclass(abc.ABCMeta, object)):
+    """Base class defining interface of objects used in Simulator."""
 
+    @abc.abstractmethod
     def ms_to_transition(self):
-        """Returns milliseconds until next state transition"""
-        raise NotImplemented
+        """Return milliseconds until next state transition."""
+        return
 
+    @abc.abstractmethod
     def increment_time(self, milliseconds):
-        """Increment internal time of simulated object as Simulator time passes
+        """
+        Increment internal time of simulated object as Simulator time passes.
 
         Args:
             milliseconds (int): milliseconds of time that has passed in simulation
         """
-        raise NotImplemented
+        return
 
+    @abc.abstractmethod
     def display_ascii(self):
-        """Method returns ascii display value of simulated object"""
-        raise NotImplemented
+        """Return ascii display value of simulated object."""
+        return
 
 
 class Simulator(object):
-    """Simulator class that runs time based simulations on a provided
-    set of BaseSimClass subclassed objects"""
+    """Simulator that runs time based simulations on a provided set of BaseSimClass objects."""
 
     def __init__(self, simulated_objects):
-        """Check if all objects have proper type and store objects to be simulated
+        """
+        Check if all objects have proper type and store objects to be simulated.
 
         Args:
             simulated_objects (BaseSimClass): objects to be simulated
@@ -53,7 +56,8 @@ class Simulator(object):
         self._simulated_objects = simulated_objects
 
     def step(self, milliseconds=None):
-        """Run indefinite simulation
+        """
+        Run indefinite simulation.
 
         Args:
             milliseconds (int, optional): milliseconds to step through simulation, if not
@@ -75,7 +79,7 @@ class Simulator(object):
         return step_time
 
     def display(self):
-        """Returns dispaly string for current simulation state"""
+        """Return dispaly string for current simulation state."""
         return '\n'.join([
             sim_object.display_ascii()
             for sim_object in self._simulated_objects

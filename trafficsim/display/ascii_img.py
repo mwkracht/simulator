@@ -1,11 +1,9 @@
-"""
-Module contains ascii art representation for traffic signal states
-"""
+"""Module contains ascii art representation for traffic signal states."""
 
 __all__ = (
-	'RED_LIGHT',
-	'YELLOW_LIGHT',
-	'GREEN_LIGHT'
+    'RED_LIGHT',
+    'YELLOW_LIGHT',
+    'GREEN_LIGHT'
 )
 
 

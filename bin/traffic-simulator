@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-
-"""
-Simple command line wrapper for running simulation
-using simulator package.
-"""
+"""Simple command line wrapper for running simulation using simulator package."""
 import argparse
 import curses
 import signal
