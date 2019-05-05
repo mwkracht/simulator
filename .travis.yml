@@ -13,7 +13,10 @@ matrix:
       env: TOXENV=lint
 
 install:
-  - pip install tox
+  - pip install tox coveralls
 
 script:
   - tox
+
+after_success:
+  - coveralls
